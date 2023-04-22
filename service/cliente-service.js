@@ -18,17 +18,24 @@
 
 
 const listaClientes = () => {
-    const promise = new Promise((resolve, reject) => {
-        const http = new XMLHttpRequest(); //XMLHttpRequest serve pra fazer a comunicação com a API.
-        http.open('GET', 'http://localhost:3000/profile'); //abrir comunicação entre aplicação e API.
+    //aplicando com Fetch agora... o "fetch" já faz um get e retorna uma promise, reduzindo em muito o código. (Conexão com a API)
+    return fetch(`http://localhost:3000/profile`)
+    .then( resposta => {
+        return resposta.json()
+    })
+
+    //Promises e CallBack Hell v
+    /*const promise = new Promise((resolve, reject) => {
+    const http = new XMLHttpRequest(); //XMLHttpRequest serve pra fazer a comunicação com a API.
+    http.open('GET', 'http://localhost:3000/profile'); //abrir comunicação entre aplicação e API.
         
-        http.onload = () => { //indicar pro javaScript o que vou fazer com a resposta que o server enviou pra mim.
+    http.onload = () => { //indicar pro javaScript o que vou fazer com a resposta que o server enviou pra mim.
             if(http.status >= 400){
                 reject(JSON.parse(http.response));
             }else {
                 resolve(JSON.parse(http.response));
             }
-        /*const http2 = new XMLHttpRequest();
+        const http2 = new XMLHttpRequest();
     http2.open('GET', 'http://localhost:3000/profile/semanaPassada');
     http2.onload = () => {
         ..
@@ -40,11 +47,11 @@ const listaClientes = () => {
         http3.send();
     }
 
-    http2.send();*/
+    http2.send();
     }
     http.send(); // enviar a nossa requisição.
     }); //criando uma promise pra evitar o CallBack Hell referenciado acima.
-    return promise;
+    return promise;*/
 } 
 
 listaClientes()
