@@ -4,7 +4,10 @@ const listaClientes = () => {
     //aplicando com Fetch agora... o "fetch" já faz um get e retorna uma promise, reduzindo em muito o código. (Conexão com a API)
     return fetch(`http://localhost:3000/profile`)
     .then( resposta => {
-        return resposta.json()
+        if(resposta.ok) {
+            return resposta.json()
+        } 
+        throw new Error('Não foi possivel listar os clientes...') // lançar erro caso aconteça
     })
 
     //Promises e CallBack Hell v
@@ -49,20 +52,30 @@ const criaCliente = (nome, email) => {
         })
     })
     .then( resposta => {
-        return resposta.body
+        if(resposta.ok) {
+            return resposta.body
+        }
+        throw new Error('Não foi possivel criar um cliente.') //erro.
     })
 }
 
 const removeCliente = (id) => {
     return fetch(`http://localhost:3000/profile/${id}`,{
         method: 'DELETE'
+    }).then( resposta => {
+        if(!resposta.ok) {
+            throw new Error('Não foi possivel remover cliente.')
+        }
     })
 }
 
 const detalhaCliente = (id) => {
     return fetch(`http://localhost:3000/profile/${id}`)
     .then( resposta => {
-        return resposta.json()
+        if(resposta.ok){
+            return resposta.json()
+        }
+        throw new Error('Não foi possivel detalhar cliente.')
     })
 
 }
@@ -79,7 +92,10 @@ const atualizaCliente = (id, nome, email) => {
         }) 
     })
     .then( resposta => {
-        return resposta.json()
+        if(resposta.ok) {
+            return resposta.json()
+        }
+        throw new Error("Não foi possivel atualizar o cliente.")
     })
 }
 

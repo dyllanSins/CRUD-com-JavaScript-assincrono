@@ -1,25 +1,37 @@
 import { clienteService } from "../service/cliente-service.js";
 
-const pegaURL = new URL(window.location) //buscar e entender em qual página a pessoa está.
+( async () => {
+    const pegaURL = new URL(window.location) //buscar e entender em qual página a pessoa está.
 
-const id = pegaURL.searchParams.get('id'); // pegar o ID do cliente.
+    const id = pegaURL.searchParams.get('id'); // pegar o ID do cliente.
 
-const inputNome = document.querySelector('[data-nome]')
-const inputEmail = document.querySelector('[data-email]')
+    const inputNome = document.querySelector('[data-nome]')
+    const inputEmail = document.querySelector('[data-email]')
 
-clienteService.detalhaCliente(id)
-.then(dados => {
-    inputNome.value = dados.nome
-    inputEmail.value = dados.email
-})
+    try {
+        const dados = await clienteService.detalhaCliente(id)
+        inputNome.value = dados.nome
+        inputEmail.value = dados.email
+    }catch(erro) {
+        console.log(erro)
+        window.location.href ='../telas/erro.html'
+    }
 
-const formulario = document.querySelector('[data-form]');
+    const formulario = document.querySelector('[data-form]');
 
-formulario.addEventListener('submit', (evento) => {
-    evento.preventDefault()
+    formulario.addEventListener('submit', async (evento) => {
+        evento.preventDefault()
 
-    clienteService.atualizaCliente(id, inputNome.value, inputEmail.value)
-    .then(() => {
+        try {
+            await clienteService.atualizaCliente(id, inputNome.value, inputEmail.value)
+            window.location.href = "../telas/edicao_concluida.html"
+        }catch(erro) {
+            console.log(erro)
+            window.location.href ='../telas/erro.html'
+        }
+    /*.then(() => {
         window.location.href = "../telas/edicao_concluida.html"
-    })
+    })*/
 })
+})()
+

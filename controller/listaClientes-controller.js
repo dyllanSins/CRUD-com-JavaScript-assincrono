@@ -22,21 +22,44 @@ const criaNovaLinha = (nome, email, id) => { //função pq iremos usar essa base
  
  const tabela = document.querySelector('[data-tabela]'); //resgatar o data-atributes pro javaScript saber onde mexer.
 
-tabela.addEventListener('click', (evento) => {
+tabela.addEventListener('click', async (evento) => {
     let botaoDel = evento.target.className === 'botao-simples botao-simples--excluir' // identificação que se FOR o BOTAO DE EXCLUIR, é pra excluir.
     if(botaoDel) {
-        const linhaCliente = evento.target.closest('[data-id]')
-        let id = linhaCliente.dataset.id
-        clienteService.removeCliente(id)
-        .then( () => {
-            linhaCliente.remove(); //pra deletar diretamente na api
-        })
-    }
+        try {        
+            const linhaCliente = evento.target.closest('[data-id]')
+            let id = linhaCliente.dataset.id
+            await clienteService.removeCliente(id)
+            linhaCliente.remove();
+        /*.then( () => {
+            linhaCliente.remove(); //pra deletar diretamente na api, com o await acima, não é necessário o then, pq o await repete essa mesma função.
+        })*/
+        }catch(erro) {
+            console.log(erro)
+            window.location.href ='../telas/erro.html'
+        }
+}
+
+
 })
 
- clienteService.listaClientes()
-.then( data => {// quando a promesa for resolvida e nao rejeitada, then ( entao ) é pro javaScript mostrar o que está abaixo.
-        data.forEach(elemento => { //pra fazer uma varredura de cada cliente dentro do "data".
-            tabela.appendChild(criaNovaLinha(elemento.nome,elemento.email, elemento.id)); //pra pegar cada dado referente ao cliente.
+const render = async () => {
+    try {
+        const listaService = await clienteService.listaClientes()
+        listaService.forEach(elemento => {
+        tabela.appendChild(criaNovaLinha(elemento.nome, elemento.email, elemento.id));
         });
-});
+    }catch(erro) {
+        console.log(erro)
+        window.location.href ='../telas/erro.html'
+    }
+
+    //then abaixo foi substituido pelo async & await acima.
+
+    /*.then( data => {// quando a promesa for resolvida e nao rejeitada, then ( entao ) é pro javaScript mostrar o que está abaixo.
+            data.forEach(elemento => { //pra fazer uma varredura de cada cliente dentro do "data".
+                tabela.appendChild(criaNovaLinha(elemento.nome,elemento.email, elemento.id)); //pra pegar cada dado referente ao cliente.
+            });
+    });*/
+}
+
+render()
